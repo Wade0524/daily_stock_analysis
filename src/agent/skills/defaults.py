@@ -11,6 +11,8 @@ This module centralises:
 
 from __future__ import annotations
 
+import os
+
 from functools import lru_cache
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional
@@ -56,6 +58,20 @@ CORE_TRADING_SKILL_POLICY_ZH = """## 默认技能基线（必须严格遵守）
 
 ### 7. 强势趋势股放宽
 - 强势趋势股可适当放宽乖离率要求，轻仓追踪但需设止损
+"""
+
+_portfolio_context = os.getenv("PORTFOLIO_CONTEXT", "").strip()
+if _portfolio_context:
+    CORE_TRADING_SKILL_POLICY_ZH += f"""
+
+## 用户持仓约束（必须纳入最终策略）
+{_portfolio_context}
+
+- 成本价只用于计算盈亏和制定风险管理计划，不得视为技术支撑位。
+- 必须区分个股集中风险与行业 ETF 风险，明确组合对同一半导体主题的总体暴露。
+- 必须给出持有、减仓、加仓、观望各自的触发条件；不得因浮亏自动建议补仓或摊薄成本。
+- 若单一个股仓位过高，应优先说明集中度风险和分批降风险方案。
+- 建议必须基于当前价格、趋势、数据质量和新闻；数据不足时明确等待确认。
 """
 
 TECHNICAL_SKILL_RULES_EN = """## Default Skill Baseline
